@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import {Tabla} from "../../interfaces/tabla";
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {GeneradorGrantsService} from '../../services/generador-grants/generador-grants.service';
-import {ClipboardJS} from 'clipboard/dist/clipboard.js';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   templateUrl: './generador-grants.component.html',
@@ -26,7 +26,7 @@ export class GeneradorGrantsComponent implements OnInit {
 
   get nombreTabla(){return this.grantForm.get("nombreTabla")};
 
-  constructor(private _generadorGrantsService:GeneradorGrantsService) {
+  constructor(private _generadorGrantsService:GeneradorGrantsService, private _clipboardService:ClipboardService) {
     
   }
 
@@ -47,5 +47,8 @@ export class GeneradorGrantsComponent implements OnInit {
     }
   }
   
+  copiarAlPortapapeles(){
+    this._clipboardService.copyFromContent(this.grants);
+  }
 
 }

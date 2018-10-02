@@ -8,6 +8,7 @@ import { GeneradorGrantsComponent } from './componentes/generador-grants/generad
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { MenuComponent } from './componentes/common/menu/menu.component';
 import { GeneradorGrantsService } from './services/generador-grants/generador-grants.service';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
@@ -19,8 +20,8 @@ import { GeneradorGrantsService } from './services/generador-grants/generador-gr
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    ClipboardModule
   ],
   providers: [GeneradorGrantsService],
   bootstrap: [AppComponent]

@@ -44,7 +44,7 @@
   <textarea rows="7" class="form-control" id="grantsGenerados" value="{{grants}}" disabled>
   </textarea>
           
-  <button class="btn btn-primary" data-clipboard-target="#grantsGenerados">
+    <button class="btn btn-primary" (click)="copiarAlPortapapeles()">
     <img src="assets/clippy.svg" alt="Copy to clipboard">
   </button>
 </div>
