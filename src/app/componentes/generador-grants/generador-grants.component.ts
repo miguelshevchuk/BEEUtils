@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import {Tabla} from "../../interfaces/tabla";
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {GeneradorGrantsService} from '../../services/generador-grants/generador-grants.service';
+import {ClipboardJS} from 'clipboard/dist/clipboard.js';
 
 @Component({
   templateUrl: './generador-grants.component.html',
-  styleUrls: ['./generador-grants.component.css']
+  styleUrls: ['./generador-grants.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class GeneradorGrantsComponent implements OnInit {
 
   esquemas:string[] = ["USR_BEE", "USR_BEE_LOG", "USR_LINK"];
   tiposDeTablas:string[]= ["Configuracion", "Transaccional", "Dominio"];
   mostrarResultado:Boolean = false;
-  grants:string[];
+  grants:string;
 
   grantForm = new FormGroup({
     esquema: new FormControl(this.esquemas[0]),

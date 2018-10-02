@@ -1,8 +1,13 @@
-.contenedor{
-    width:50%;
-    margin-left:2%;
+.contenedorformulario{
+    width:40%;
 }
 
 .resultado{
-    margin-top:20px;
+  width:50%;
+  float:right;
+  margin-left:10px;
+}
+
+#grantsGenerados{
+    margin-bottom:10px;
 }

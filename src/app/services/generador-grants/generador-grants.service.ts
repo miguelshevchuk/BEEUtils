@@ -7,6 +7,7 @@ export class GeneradorGrantsService {
   private GRANT:string = "GRANT "; 
   private ON:string = " ON "; 
   private TO:string = " TO "; 
+  private ENTER:string = "\n"; 
 
   constructor() {
     
@@ -15,16 +16,16 @@ export class GeneradorGrantsService {
 
   generarGrants(tabla:Tabla){
     let grants = this.armarGrantsGenericos(tabla);
-    grants.push(this.armarGrantsParaBatch(tabla));
-    grants.push(this.armarGrantsParaApp(tabla));
+    grants += this.armarGrantsParaBatch(tabla);
+    grants += this.armarGrantsParaApp(tabla);
 
     return grants;
     
   }
 
   private armarGrantsGenericos(tabla:Tabla){
-    let grants = [this.GRANT+"SELECT "+this.ON+this.definicionTabla(tabla)+this.TO+"atinc_bee;"];
-    grants.push(this.GRANT+"SELECT, UPDATE, DELETE"+this.ON+this.definicionTabla(tabla)+this.TO+"rol_sr");
+    let grants = this.GRANT+"SELECT "+this.ON+this.definicionTabla(tabla)+this.TO+"atinc_bee;"+this.ENTER;
+    grants += this.GRANT+"SELECT, UPDATE, DELETE"+this.ON+this.definicionTabla(tabla)+this.TO+"rol_sr;"+this.ENTER;
     
     return grants;
   }
@@ -32,7 +33,7 @@ export class GeneradorGrantsService {
   private armarGrantsParaBatch(tabla:Tabla){
     let grants = "";
     if(tabla.batch){
-      grants = this.armarEstructuraGrant(tabla)+"ROL_BEE_B;";
+      grants = this.armarEstructuraGrant(tabla)+"ROL_BEE_B;"+this.ENTER;
     }
     return grants;
   }
@@ -40,7 +41,7 @@ export class GeneradorGrantsService {
   private armarGrantsParaApp(tabla:Tabla){
     let grants = "";
     if(tabla.aplicacion){
-      grants = this.armarEstructuraGrant(tabla)+"ROL_BEE_A;";
+      grants = this.armarEstructuraGrant(tabla)+"ROL_BEE_A;"+this.ENTER;
     }
     return grants;
   }

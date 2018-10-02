@@ -1,4 +1,5 @@
-<div class="contenedor">
+<div>
+<div class="contenedorformulario float-left">
   <form  [formGroup]="grantForm" (ngSubmit)="generarGrants()">
     
     <div class="form-group">
@@ -34,16 +35,17 @@
         <label class="form-check-label" for="inlineCheckbox2">Batch</label>
       </div>
     </div>
-    <button type="submit" [disabled]="!grantForm.valid" class="btn btn-primary">Generar</button>
+    <button type="submit" [disabled]="!grantForm.valid" class="btn btn-primary btnSubmit">Generar</button>
   </form>
 </div>
-<div *ngIf="mostrarResultado" class="resultado">
-
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <h1 class="display-9">Habemus Grants!</h1>
-          <p *ngFor="let grant of grants" class="lead">{{grant}}</p>
-        </div>
-      </div>
-    
+<div *ngIf="mostrarResultado" class="resultado float-right container">
+  <label for="grantsGenerados">Habemus Grants!</label>
+          
+  <textarea rows="7" class="form-control" id="grantsGenerados" value="{{grants}}" disabled>
+  </textarea>
+          
+  <button class="btn btn-primary" data-clipboard-target="#grantsGenerados">
+    <img src="assets/clippy.svg" alt="Copy to clipboard">
+  </button>
+</div>
 </div>
