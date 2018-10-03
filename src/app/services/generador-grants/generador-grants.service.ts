@@ -24,8 +24,8 @@ export class GeneradorGrantsService {
   }
 
   private armarGrantsGenericos(tabla:Tabla){
-    let grants = this.GRANT+"SELECT "+this.ON+this.definicionTabla(tabla)+this.TO+"atinc_bee;"+this.ENTER;
-    grants += this.GRANT+"SELECT, UPDATE, DELETE"+this.ON+this.definicionTabla(tabla)+this.TO+"rol_sr;"+this.ENTER;
+    let grants = this.GRANT+"SELECT "+this.ON+this.definicionTabla(tabla)+this.TO+"ROLE_ATINC_BEE;"+this.ENTER;
+    grants += this.GRANT+"SELECT, UPDATE, DELETE, INSERT "+this.ON+this.definicionTabla(tabla)+this.TO+"ROLE_USR_BEE_SRN;"+this.ENTER;
     
     return grants;
   }
