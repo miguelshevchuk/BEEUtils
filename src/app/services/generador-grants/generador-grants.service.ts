@@ -16,7 +16,6 @@ export class GeneradorGrantsService {
 
   generarGrants(tabla:Tabla){
     let grants = this.armarGrantsGenericos(tabla);
-    grants += this.armarGrantsParaBatch(tabla);
     grants += this.armarGrantsParaApp(tabla);
 
     return grants;
@@ -30,19 +29,20 @@ export class GeneradorGrantsService {
     return grants;
   }
 
-  private armarGrantsParaBatch(tabla:Tabla){
-    let grants = "";
-    if(tabla.batch){
-      grants = this.armarEstructuraGrant(tabla)+"ROL_BEE_B;"+this.ENTER;
+  private decidirROL(tabla:Tabla){
+    let rol = "";
+    if(tabla.aplicacion == "BATCH"){
+      rol = "ROL_BEE_B";
+    }else if(tabla.aplicacion == "BEE"){
+      rol = "ROL_BEE_A";
+    }else if(tabla.aplicacion == "BO"){
+      rol = "ROL_BO_A";
     }
-    return grants;
+    return rol;
   }
   
   private armarGrantsParaApp(tabla:Tabla){
-    let grants = "";
-    if(tabla.aplicacion){
-      grants = this.armarEstructuraGrant(tabla)+"ROL_BEE_A;"+this.ENTER;
-    }
+    let grants = this.armarEstructuraGrant(tabla)+this.decidirROL(tabla)+";"+this.ENTER;
     return grants;
   }
 
@@ -63,7 +63,7 @@ export class GeneradorGrantsService {
     }else if(tipoTabla == "Transaccional"){
       return  "SELECT, UPDATE, INSERT";
     
-    }else if(tipoTabla == "Dominio"){
+    }else if(tipoTabla == "Consulta"){
       return "SELECT";
     
     }else if(tipoTabla == "Store Procedure"){

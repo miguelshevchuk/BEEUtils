@@ -12,7 +12,8 @@ import { ClipboardService } from 'ngx-clipboard';
 export class GeneradorGrantsComponent implements OnInit {
 
   esquemas:string[] = ["USR_BEE", "USR_BEE_LOG", "USR_LINK"];
-  tiposDeTablas:string[]= ["Configuracion", "Transaccional", "Dominio"];
+  tiposDeTablas:string[]= ["Configuracion", "Transaccional", "Consulta"];
+  aplicaciones:string[] = ["BEE", "BO", "BATCH"];
   mostrarResultado:Boolean = false;
   grants:string;
 
@@ -20,8 +21,7 @@ export class GeneradorGrantsComponent implements OnInit {
     esquema: new FormControl(this.esquemas[0]),
     nombreTabla: new FormControl(null, [Validators.required]),
     tipoTabla: new FormControl(this.tiposDeTablas[0]),
-    aplicacion: new FormControl(true),
-    batch: new FormControl(false),
+    aplicacion: new FormControl("BEE")
   });
 
   get nombreTabla(){return this.grantForm.get("nombreTabla")};
