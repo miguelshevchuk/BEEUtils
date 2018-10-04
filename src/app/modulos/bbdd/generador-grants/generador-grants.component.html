@@ -28,8 +28,8 @@
 
     <div class="form-group">
       <div class="custom-control custom-radio custom-control-inline" *ngFor="let app of aplicaciones">
-        <input formControlName="aplicacion" type="radio" id="radio{{app}}" value="{{app}}" class="custom-control-input">
-        <label class="custom-control-label" for="radio{{app}}">{{app}}</label>
+        <input formControlName="aplicacion" type="radio" id="radio{{app.aplicacion}}" value="{{app.rol}}" class="custom-control-input">
+        <label class="custom-control-label" for="radio{{app.aplicacion}}">{{app.aplicacion}}</label>
       </div>
 
       <p class="lead text-info leyenda">

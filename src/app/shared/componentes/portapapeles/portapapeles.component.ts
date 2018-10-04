@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ClipboardService } from 'ngx-clipboard';
 import { ActivatedRoute } from '@angular/router';
-import { Portapapeles } from '../../modelos/shared/portapapeles';
+import { Portapapeles } from '../../../modelos/shared/portapapeles';
 
 @Component({
   selector: 'app-portapapeles',

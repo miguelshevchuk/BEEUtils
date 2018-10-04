@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Tabla} from "../../../modelos/bbdd/tabla";
+import { Aplicaciones } from '../../../shared/constantes/bbdd/aplicaciones.const';
 
 @Injectable()
 export class GeneradorGrantsService {
@@ -23,26 +24,14 @@ export class GeneradorGrantsService {
   }
 
   private armarGrantsGenericos(tabla:Tabla){
-    let grants = this.GRANT+"SELECT "+this.ON+this.definicionTabla(tabla)+this.TO+"ROLE_ATINC_BEE;"+this.ENTER;
-    grants += this.GRANT+"SELECT, UPDATE, DELETE, INSERT "+this.ON+this.definicionTabla(tabla)+this.TO+"ROLE_USR_BEE_SRN;"+this.ENTER;
+    let grants = this.GRANT+"SELECT "+this.ON+this.definicionTabla(tabla)+this.TO+Aplicaciones.ATINC.rol+";"+this.ENTER;
+    grants += this.GRANT+"SELECT, UPDATE, DELETE, INSERT "+this.ON+this.definicionTabla(tabla)+this.TO+Aplicaciones.SCRIPTRUN.rol+";"+this.ENTER;
     
     return grants;
   }
-
-  private decidirROL(tabla:Tabla){
-    let rol = "";
-    if(tabla.aplicacion == "BATCH"){
-      rol = "ROL_BEE_B";
-    }else if(tabla.aplicacion == "BEE"){
-      rol = "ROL_BEE_A";
-    }else if(tabla.aplicacion == "BO"){
-      rol = "ROL_BO_A";
-    }
-    return rol;
-  }
   
   private armarGrantsParaApp(tabla:Tabla){
-    let grants = this.armarEstructuraGrant(tabla)+this.decidirROL(tabla)+";"+this.ENTER;
+    let grants = this.armarEstructuraGrant(tabla)+tabla.aplicacion+";"+this.ENTER;
     return grants;
   }
 
