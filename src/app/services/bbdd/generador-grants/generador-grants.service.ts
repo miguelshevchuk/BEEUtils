@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Tabla} from "../../../interfaces/bbdd/tabla";
+import {Tabla} from "../../../modelos/bbdd/tabla";
 
 @Injectable()
 export class GeneradorGrantsService {

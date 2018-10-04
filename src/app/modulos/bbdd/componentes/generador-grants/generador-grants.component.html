@@ -35,14 +35,9 @@
     <button type="submit" [disabled]="!grantForm.valid" class="btn btn-primary btnSubmit">Generar</button>
   </form>
 </div>
-<div *ngIf="mostrarResultado" class="resultado float-right container">
-  <label for="grantsGenerados">Habemus Grants!</label>
-          
-  <textarea rows="7" class="form-control" id="grantsGenerados" value="{{grants}}" disabled>
-  </textarea>
-          
-    <button class="badge btnSubmit" (click)="copiarAlPortapapeles()">
-      Copiar
-    </button>
+<div class="resultado float-right container">
+  
+  <router-outlet></router-outlet>
+  
 </div>
 </div>

@@ -7,11 +7,13 @@ import { MenuComponent } from './shared/menu/menu.component';
 import { GeneradorGrantsService } from './services/bbdd/generador-grants/generador-grants.service';
 import { HomeModule } from './modulos/home/home.module';
 import { BBDDModule } from './modulos/bbdd/bbdd.module';
+import { PortapapelesComponent } from './shared/portapapeles/portapapeles.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MenuComponent
+    MenuComponent,
+    PortapapelesComponent
   ],
   imports: [
     BrowserModule,
