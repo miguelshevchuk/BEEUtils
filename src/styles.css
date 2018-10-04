@@ -18,3 +18,8 @@ body{
     background-color: #a6d2f0!important;
     border-color: #a6d2f0!important;
 }
+
+.btnSubmit:enabled:active{
+    background-color: #89c8f1!important;
+    border-color: #89c8f1!important;
+}

@@ -1,3 +1,4 @@
+<h1 class="display-8">Generador de Grants</h1>
 <div>
 <div class="contenedorformulario float-left">
   <form  [formGroup]="grantForm" (ngSubmit)="generarGrants()">
@@ -30,6 +31,10 @@
         <input formControlName="aplicacion" type="radio" id="radio{{app}}" value="{{app}}" class="custom-control-input">
         <label class="custom-control-label" for="radio{{app}}">{{app}}</label>
       </div>
+
+      <p class="lead text-info leyenda">
+          Recordá que lo generado por esta aplicación, es solo orientativo.
+      </p>
 
     </div>
     <button type="submit" [disabled]="!grantForm.valid" class="btn btn-primary btnSubmit">Generar</button>
