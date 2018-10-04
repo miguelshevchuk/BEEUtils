@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import {Tabla} from "../../interfaces/tabla";
+import {Tabla} from "../../../../interfaces/bbdd/tabla";
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {GeneradorGrantsService} from '../../services/generador-grants/generador-grants.service';
+import {GeneradorGrantsService} from '../../../../services/bbdd/generador-grants/generador-grants.service';
 import { ClipboardService } from 'ngx-clipboard';
 
 @Component({

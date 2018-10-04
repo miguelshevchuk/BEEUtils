@@ -1,0 +1,20 @@
+.navbar{
+    background-color: #e3f2fd!important;
+    margin-bottom:15px;
+}
+
+.dropdown-menu{
+    background-color: #e3f2fd!important;
+    border-color: #a6d2f0!important;
+}
+
+.dropdown-item:hover{
+    background-color: #c0def3!important;
+    border-color: #c0def3!important;
+}
+
+.dropdown-item:hover:active{
+    background-color: #a6d2f0!important;
+    border-color: #a6d2f0!important;
+    color: black;
+}
