@@ -7,6 +7,7 @@ import { MenuComponent } from './shared/componentes/menu/menu.component';
 import { GeneradorGrantsService } from './services/bbdd/generador-grants/generador-grants.service';
 import { HomeModule } from './modulos/home/home.module';
 import { BBDDModule } from './modulos/bbdd/bbdd.module';
+import { TrackersModule } from './modulos/trackers/trackers.module';
 import { PortapapelesComponent } from './shared/componentes/portapapeles/portapapeles.component';
 
 @NgModule({
@@ -19,7 +20,8 @@ import { PortapapelesComponent } from './shared/componentes/portapapeles/portapa
     BrowserModule,
     AppRoutingModule,
     BBDDModule,
-    HomeModule
+    HomeModule,
+    TrackersModule
   ],
   providers: [GeneradorGrantsService],
   bootstrap: [AppComponent]

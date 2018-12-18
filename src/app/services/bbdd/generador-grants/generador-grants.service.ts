@@ -57,6 +57,8 @@ export class GeneradorGrantsService {
     
     }else if(tipoTabla == "Store Procedure"){
       return "EXECUTE";
+    }else if(tipoTabla == "Log"){
+      return "INSERT";
     }
 
     return "";

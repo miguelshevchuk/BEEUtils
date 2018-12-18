@@ -16,7 +16,7 @@ import { Aplicacion } from '../../../modelos/bbdd/aplicacion';
 export class GeneradorGrantsComponent implements OnInit {
 
   esquemas:string[] = ["USR_BEE", "USR_BEE_LOG", "USR_LINK"];
-  tiposDeTablas:string[]= ["Configuracion", "Transaccional", "Consulta"];
+  tiposDeTablas:string[]= ["Configuracion", "Transaccional", "Consulta", "Log"];
   aplicaciones:Aplicacion[] = [Aplicaciones.BEE, Aplicaciones.BO, Aplicaciones.BATCH];
 
   grantForm = new FormGroup({
