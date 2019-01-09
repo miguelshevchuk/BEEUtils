@@ -1,0 +1,102 @@
+
+<div class="container">
+<h1 class="display-8">Generador de Scripts</h1>
+<div>
+  <form  [formGroup]="scriptForm" (ngSubmit)="generarGrants()">
+
+    <div class="form-group">
+      <label for="esquema">Esquema</label>
+      <select formControlName="esquema" class="form-control" name="esquema">
+        <option *ngFor="let esquema of esquemas" [ngValue]="esquema">{{esquema}}</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="tabla">Tabla</label>
+      <input [ngClass]="{'is-invalid':nombreTabla.invalid && (nombreTabla.dirty || nombreTabla.touched)}" pattern="[a-zA-Z_]*" formControlName="nombreTabla" class="form-control" type="text" placeholder="Ingrese la tabla a generar" required>
+      <div class="invalid-feedback">
+        Dale.. Crack...
+      </div>
+    </div>
+
+    <h4 class="display-9 float-left">Campos</h4>
+    <button class="btn btn-primary btnSubmit margin-left" (click)="agregarNuevoCampo()"><span href="#" class="oi oi-plus"></span></button>
+    
+    <div formArrayName="campos">
+      <div *ngFor="let campo of campos.controls; index as idx" [formGroupName]="idx">
+      <br />
+      <div class="form-row">
+        <div class="col-3">
+          <input type="text" [ngClass]="{'is-invalid':nombreCampo(idx).invalid && (nombreCampo(idx).dirty || nombreCampo(idx).touched)}" class="form-control" placeholder="Nombre" name="nombreCampo" formControlName="nombreCampo" pattern="[a-zA-Z_]*">
+          <div class="invalid-feedback">
+            Dale.. Crack...
+          </div>
+        </div>
+        <div class="col-3">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="tipoDato">Tipo</label>
+                </div>
+                <select class="custom-select" id="tipoDato" formControlName="tipoDato" >
+                    <option *ngFor="let tipo of tiposDeDatos" [ngValue]="tipo">{{tipo}}</option>
+                </select>
+              </div>
+              <input type="text" [ngClass]="{'is-invalid':tamanio(idx).invalid && (tamanio(idx).dirty || tamanio(idx).touched)}" class="form-control" placeholder="Tamaño" name="tamanio" formControlName="tamanio" pattern="[0-9]*">
+              <div class="invalid-feedback">
+                Dale.. Crack...
+              </div>
+        </div>
+        <div class="col">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <input formControlName="esNotNull" name="esNotNull" type="checkbox" aria-label="Checkbox for following text input">                
+              </div>
+            </div>
+            <input type="text" class="form-control" value="Not Null" aria-label="Text input with checkbox">
+          </div>
+        </div>
+        <div class="col">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <input formControlName="esUnique" name="esUnique" type="checkbox" aria-label="Checkbox for following text input">                
+              </div>
+            </div>
+              <input type="text" class="form-control" value="Unique" aria-label="Text input with checkbox">
+          </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input formControlName="esPK" name="esPK" type="checkbox" aria-label="Checkbox for following text input">
+                </div>
+              </div>
+              <input type="text" class="form-control" value="PK" aria-label="Text input with checkbox">
+            </div>    
+        </div>
+        <div class="col">
+          <button class="btn btn-primary btnSubmit" (click)="quitarCampo(idx)"><span href="#" class="oi oi-x"></span></button>
+        </div>
+      </div>
+      </div>
+  </div>
+      
+
+
+
+      <p class="lead text-info leyenda">
+          Recordá que lo generado por esta aplicación, es solo orientativo.
+      </p>
+
+    <button type="submit" [disabled]="!scriptForm.valid" class="btn btn-primary btnSubmit">Generar</button>
+  </form>
+ 
+</div>
+<div class="resultadoCreate">
+  
+  <router-outlet></router-outlet>
+  
+</div>
+</div>
