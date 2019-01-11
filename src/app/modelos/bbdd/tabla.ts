@@ -7,6 +7,7 @@ export class Tabla {
     public aplicacion:string;
     public tipoTabla:string;
     public campos:Campo[];
+    public comentario: string;
 
     constructor(){}
 

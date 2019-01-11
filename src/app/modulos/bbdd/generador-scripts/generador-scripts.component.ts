@@ -21,8 +21,18 @@ export class GeneradorScriptsComponent implements OnInit {
   scriptForm = new FormGroup({
     esquema: new FormControl(this.esquemas[0]),
     nombreTabla: new FormControl(null, [Validators.required]),
+    comentario: new FormControl(null, [Validators.required]),
     campos: new FormArray([ 
-      this.nuevoCampo()
+      new FormGroup({
+        nombreCampo: new FormControl(null, [Validators.required]),
+        tipoDato: new FormControl(this.tiposDeDatos[0]),
+        tamanio: new FormControl(null),
+        esPK: new FormControl(true),
+        esNotNull: new FormControl(true),
+        esUnique: new FormControl(false),
+        comentario: new FormControl("Identificador de la tabla", [Validators.required]),
+        dominio: new FormControl(null, [Validators.required])
+      })
     ])
   });
 
@@ -30,9 +40,17 @@ export class GeneradorScriptsComponent implements OnInit {
 
   get nombreTabla(){return this.scriptForm.get("nombreTabla")};
 
+  get comentarioTabla() { return this.scriptForm.get("comentario") };
+
   nombreCampo(idx){ return this.campos.at(idx).get("nombreCampo")};
 
   tamanio(idx){ return this.campos.at(idx).get("tamanio")};
+
+  esPK(idx) { return this.campos.at(idx).get("esPK") };
+
+  dominio(idx) { return this.campos.at(idx).get("dominio") };
+
+  comentario(idx) { return this.campos.at(idx).get("comentario") };
 
   get campos():FormArray{return <FormArray>this.scriptForm.get("campos")};
 
@@ -42,21 +60,28 @@ export class GeneradorScriptsComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
 
   nuevoCampo(){
+    
     return new FormGroup({
       nombreCampo: new FormControl(null, [Validators.required]),
       tipoDato: new FormControl(this.tiposDeDatos[0]),
       tamanio: new FormControl(null),
       esPK: new FormControl(false),
-      esNotNull: new FormControl(null),
-      esUnique: new FormControl(null)
+      esNotNull: new FormControl(false),
+      esUnique: new FormControl(false),
+      comentario: new FormControl(null, [Validators.required]),
+      dominio: new FormControl(null, [Validators.required])
     });
   }
 
-  agregarNuevoCampo(){
+  nombrePK(){
+    this.nombreCampo(0).setValue(this.nombreTabla.value + "_ID");
+  }
 
+  agregarNuevoCampo(){
     this.campos.push(
       this.nuevoCampo()
     );
@@ -69,8 +94,12 @@ export class GeneradorScriptsComponent implements OnInit {
 
   generarGrants(){
 
+
+
     if(this.scriptForm.valid){
       let tabla:Tabla = this.scriptForm.value;
+
+      console.log(tabla);
 
       let grants = this._generadorGrantsService.generarGrants(tabla);
 

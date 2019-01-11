@@ -13,7 +13,17 @@
     
     <div class="form-group">
       <label for="tabla">Tabla</label>
-      <input [ngClass]="{'is-invalid':nombreTabla.invalid && (nombreTabla.dirty || nombreTabla.touched)}" pattern="[a-zA-Z_]*" formControlName="nombreTabla" class="form-control" type="text" placeholder="Ingrese la tabla a generar" required>
+      <input [ngClass]="{'is-invalid':nombreTabla.invalid && (nombreTabla.dirty || nombreTabla.touched)}" pattern="[a-zA-Z_]*" formControlName="nombreTabla" class="form-control" type="text" placeholder="Ingrese la tabla a generar" (change)="nombrePK()" required>
+      <div class="invalid-feedback">
+        Dale.. Crack...
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="comentario">Comentario</label>
+      <input [ngClass]="{'is-invalid':comentarioTabla.invalid && (comentarioTabla.dirty || comentarioTabla.touched)}" pattern="[a-zA-Z_ ]*"
+        formControlName="comentario" class="form-control" type="text" placeholder="Ingrese el comentario de la tabla"
+        required>
       <div class="invalid-feedback">
         Dale.. Crack...
       </div>
@@ -23,11 +33,13 @@
     <button class="btn btn-primary btnSubmit margin-left" (click)="agregarNuevoCampo()"><span href="#" class="oi oi-plus"></span></button>
     
     <div formArrayName="campos">
-      <div *ngFor="let campo of campos.controls; index as idx" [formGroupName]="idx">
+      <div *ngFor="let campo of campos.controls; index as idx" [formGroupName]="idx" class="clearfix">
       <br />
+      <hr>
+      <div class="float-left">
       <div class="form-row">
-        <div class="col-3">
-          <input type="text" [ngClass]="{'is-invalid':nombreCampo(idx).invalid && (nombreCampo(idx).dirty || nombreCampo(idx).touched)}" class="form-control" placeholder="Nombre" name="nombreCampo" formControlName="nombreCampo" pattern="[a-zA-Z_]*">
+        <div class="col-4">
+          <input type="text" [ngClass]="{'is-invalid':nombreCampo(idx).invalid && (nombreCampo(idx).dirty || nombreCampo(idx).touched)}" class="form-control" placeholder="Nombre" name="nombreCampo" formControlName="nombreCampo" pattern="[a-zA-Z_]*" >
           <div class="invalid-feedback">
             Dale.. Crack...
           </div>
@@ -41,45 +53,59 @@
                     <option *ngFor="let tipo of tiposDeDatos" [ngValue]="tipo">{{tipo}}</option>
                 </select>
               </div>
-              <input type="text" [ngClass]="{'is-invalid':tamanio(idx).invalid && (tamanio(idx).dirty || tamanio(idx).touched)}" class="form-control" placeholder="Tamaño" name="tamanio" formControlName="tamanio" pattern="[0-9]*">
-              <div class="invalid-feedback">
-                Dale.. Crack...
-              </div>
         </div>
-        <div class="col">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <input formControlName="esNotNull" name="esNotNull" type="checkbox" aria-label="Checkbox for following text input">                
-              </div>
-            </div>
-            <input type="text" class="form-control" value="Not Null" aria-label="Text input with checkbox">
+        <div class="col-4">
+          <input type="text" [ngClass]="{'is-invalid':comentario(idx).invalid && (comentario(idx).dirty || comentario(idx).touched)}"
+            class="form-control" placeholder="Comentario" name="comentario" formControlName="comentario" pattern="[a-zA-Z_ ]*">
+          <div class="invalid-feedback">
+            Dale.. Crack...
           </div>
         </div>
-        <div class="col">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <input formControlName="esUnique" name="esUnique" type="checkbox" aria-label="Checkbox for following text input">                
-              </div>
-            </div>
-              <input type="text" class="form-control" value="Unique" aria-label="Text input with checkbox">
-          </div>
-        </div>
-        <div class="col">
+        
+      </div>
+      <br />
+      <div class="form-row">
+
+          <div class="col-2">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
-                  <input formControlName="esPK" name="esPK" type="checkbox" aria-label="Checkbox for following text input">
+                  <input formControlName="esNotNull" name="esNotNull" type="checkbox">
                 </div>
               </div>
-              <input type="text" class="form-control" value="PK" aria-label="Text input with checkbox">
-            </div>    
+              <input type="text" class="form-control" value="Not Null">
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input formControlName="esUnique" name="esUnique" type="checkbox">
+                </div>
+              </div>
+              <input type="text" class="form-control" value="Unique">
+            </div>
+          </div>
+        <div class="col-3">
+          <input type="text" [ngClass]="{'is-invalid':tamanio(idx).invalid && (tamanio(idx).dirty || tamanio(idx).touched)}"
+            class="form-control" placeholder="Tamaño" name="tamanio" formControlName="tamanio" pattern="[0-9]*">
+          <div class="invalid-feedback">
+            Dale.. Crack...
+          </div>
         </div>
-        <div class="col">
-          <button class="btn btn-primary btnSubmit" (click)="quitarCampo(idx)"><span href="#" class="oi oi-x"></span></button>
+        
+        <div class="col-4">
+          <input type="text" class="form-control" [ngClass]="{'is-invalid':dominio(idx).invalid && (dominio(idx).dirty || dominio(idx).touched)}"
+            placeholder="Dominio" name="dominio" formControlName="dominio" pattern="[a-zA-Z_/, ]*">
+          <div class="invalid-feedback">
+            Dale.. Crack...
+          </div>
+
         </div>
+
       </div>
+      </div>
+        <button *ngIf="!esPK(idx).value" class="btn btn-primary btnSubmit" (click)="quitarCampo(idx)"><span href="#" class="oi oi-x"></span></button>
       </div>
   </div>
       
