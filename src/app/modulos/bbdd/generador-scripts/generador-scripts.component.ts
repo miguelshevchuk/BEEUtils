@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import {Tabla} from "../../../modelos/bbdd/tabla";
 import {FormControl, FormGroup, Validators, FormArray} from '@angular/forms';
-import {GeneradorGrantsService} from '../../../services/bbdd/generador-grants/generador-grants.service';
+import {GeneradorCreateService} from '../../../services/bbdd/generador-create/generador-create.service';
 import {Router, ActivatedRoute} from '@angular/router';
 import { Portapapeles } from '../../../modelos/shared/portapapeles';
-import { Aplicaciones } from '../../../shared/constantes/bbdd/aplicaciones.const';
-import { Aplicacion } from '../../../modelos/bbdd/aplicacion';
 
 @Component({
   selector: 'app-generador-scripts',
   templateUrl: './generador-scripts.component.html',
-  styleUrls: ['./generador-scripts.component.css']
+  styleUrls: ['./generador-scripts.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class GeneradorScriptsComponent implements OnInit {
 
@@ -57,7 +56,7 @@ export class GeneradorScriptsComponent implements OnInit {
 
   get campos():FormArray{return <FormArray>this.scriptForm.get("campos")};
 
-  constructor(private _generadorGrantsService:GeneradorGrantsService, 
+  constructor(private _generadorCreateService:GeneradorCreateService, 
     private _router: Router, private activatedRoute: ActivatedRoute) {
     
   }
@@ -95,7 +94,7 @@ export class GeneradorScriptsComponent implements OnInit {
     this.campos.removeAt(index);
   }
 
-  generarGrants(){
+  generarCreate(){
 
 
 
@@ -104,9 +103,9 @@ export class GeneradorScriptsComponent implements OnInit {
 
       console.log(tabla);
 
-      let grants = this._generadorGrantsService.generarGrants(tabla);
+      let create = this._generadorCreateService.generarCreate(tabla);
 
-      let contenidoPortapeles = new Portapapeles(grants, "Habemus Creates!");
+      let contenidoPortapeles = new Portapapeles(create, "Habemus Creates!");
 
       this._router.navigate(
         ['resultadoScripts', JSON.stringify(contenidoPortapeles)], 
