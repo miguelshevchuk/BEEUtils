@@ -20,6 +20,13 @@
     </div>
 
     <div class="form-group">
+      <label for="tipoTabla">Tipo de tabla</label>
+      <select formControlName="tipoTabla" class="form-control">
+        <option *ngFor="let tipo of tiposDeTablas" [ngValue]="tipo">{{tipo}}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label for="comentario">Comentario</label>
       <input [ngClass]="{'is-invalid':comentarioTabla.invalid && (comentarioTabla.dirty || comentarioTabla.touched)}" pattern="[a-zA-Z_ ]*"
         formControlName="comentario" class="form-control" type="text" placeholder="Ingrese el comentario de la tabla"

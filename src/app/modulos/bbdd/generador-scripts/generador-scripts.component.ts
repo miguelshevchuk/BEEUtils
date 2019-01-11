@@ -18,9 +18,12 @@ export class GeneradorScriptsComponent implements OnInit {
 
   tiposDeDatos:string[] = ["INTEGER", "VARCHAR", "VARCHAR2", "CHAR"];
 
+  tiposDeTablas: string[] = ["Configuracion", "Transaccional", "Log", "Temporales", "Maestra" , "Dominio"];
+
   scriptForm = new FormGroup({
     esquema: new FormControl(this.esquemas[0]),
     nombreTabla: new FormControl(null, [Validators.required]),
+    tipoTabla: new FormControl(this.tiposDeTablas[0]),
     comentario: new FormControl(null, [Validators.required]),
     campos: new FormArray([ 
       new FormGroup({
