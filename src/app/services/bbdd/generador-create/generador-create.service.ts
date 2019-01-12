@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tabla } from "../../../modelos/bbdd/tabla";
 import { Campo } from "../../../modelos/bbdd/campo";
-import { IfStmt } from '@angular/compiler';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Injectable()
 export class GeneradorCreateService {
