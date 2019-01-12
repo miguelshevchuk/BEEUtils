@@ -26,11 +26,11 @@ export class GeneradorScriptsComponent implements OnInit {
     comentario: new FormControl(null, [Validators.required]),
     campos: new FormArray([ 
       new FormGroup({
-        nombreCampo: new FormControl(null, [Validators.required]),
+        nombreCampo: new FormControl({value: null, disabled: true}, [Validators.required]),
         tipoDato: new FormControl(this.tiposDeDatos[0]),
         tamanio: new FormControl(null),
         esPK: new FormControl(true),
-        esNotNull: new FormControl(true),
+        esNotNull: new FormControl({value: true, disabled: true}),
         esUnique: new FormControl(false),
         comentario: new FormControl("Identificador de la tabla", [Validators.required]),
         dominio: new FormControl(null, [Validators.required])
