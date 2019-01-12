@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tabla } from "../../../modelos/bbdd/tabla";
 import { Campo } from "../../../modelos/bbdd/campo";
 import { IfStmt } from '@angular/compiler';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Injectable()
 export class GeneradorCreateService {
@@ -14,7 +15,65 @@ export class GeneradorCreateService {
   constructor() { }
 
   generarCreate(tabla:Tabla){
-    return this.generarCreateOracle(tabla);
+    if(tabla.motor == "Oracle"){
+      return this.generarCreateOracle(tabla);
+    }else{
+      return this.generarCreateSQL(tabla);
+    }
+  }
+
+  prepararCampoPK(campo:Campo, tabla:Tabla){
+    campo.esNotNull = true;
+    campo.nombreCampo = tabla.nombreTabla + "_ID";
+    return campo;
+  }
+
+  generarCreateSQL(tabla: Tabla) {
+    let constraintPK = this.TAB+"CONSTRAINT [PK_"+tabla.nombreTabla+"] PRIMARY KEY CLUSTERED "+this.ENTER+"("+this.ENTER;
+
+    let comentarios = this.generarComentarioTablaSQL(tabla);
+
+    let create = "USE ["+tabla.base+"];"+this.ENTER+this.ENTER;
+
+    create += "GO"+this.ENTER+this.ENTER;
+
+    create += "CREATE TABLE [dbo].[" + tabla.nombreTabla + "]{" + this.ENTER;
+
+    for (let i = 0; i < tabla.campos.length; i++) {
+
+      let campo = tabla.campos[i];
+
+      if (campo.esPK) {
+
+        campo = this.prepararCampoPK(campo, tabla);
+
+        constraintPK += this.TAB+"["+campo.nombreCampo+"]ASC"+this.ENTER;
+
+        constraintPK += ")" + this.ENTER+this.TAB +"WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ";
+        
+        constraintPK += "IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, ";
+        constraintPK += "FILLFACTOR = 90) ON [PRIMARY] "+this.ENTER;
+
+
+      }
+
+      create += this.TAB + this.generarCampoSQL(campo);
+      
+      create += "," + this.ENTER;
+
+      comentarios += this.generarComentarioCampoSQL(tabla, campo);
+
+    }
+
+    create += constraintPK;
+
+    create += ") ON[PRIMARY]"+this.ENTER+this.ENTER;
+
+    create += "GO"+this.ENTER+this.ENTER;
+
+    create += comentarios;
+
+    return create.toUpperCase();
   }
 
   generarCreateOracle(tabla: Tabla){
@@ -25,16 +84,17 @@ export class GeneradorCreateService {
 
       for(let i=0; i < tabla.campos.length; i++){
 
-        if (tabla.campos[i].esPK){
+        let campo = tabla.campos[i];
 
-          tabla.campos[i].esNotNull = true;
-          tabla.campos[i].nombreCampo = tabla.nombreTabla+"_ID";
+        if (campo.esPK){
 
-          constraints += this.generarConstraintPK(tabla, tabla.campos[i]);
+          campo = this.prepararCampoPK(campo, tabla);
+
+          constraints += this.generarConstraintPK(tabla, campo);
 
         }
         
-        create += this.TAB + this.generarCampo(tabla.campos[i]);
+        create += this.TAB + this.generarCampo(campo);
 
 
         if (i < tabla.campos.length-1){
@@ -42,10 +102,10 @@ export class GeneradorCreateService {
         }
 
         if (tabla.campos[i].esNotNull){
-          constraints += this.generarConstraintNN(tabla, tabla.campos[i]);
+          constraints += this.generarConstraintNN(tabla, campo);
         }
 
-        comentarios += this.generarComentarioCampo(tabla, tabla.campos[i]);
+        comentarios += this.generarComentarioCampo(tabla, campo);
 
       }
 
@@ -57,7 +117,7 @@ export class GeneradorCreateService {
 
     create += comentarios;
 
-    return create;
+    return create.toUpperCase();
   }
 
   generarCampo(campo:Campo){
@@ -69,6 +129,27 @@ export class GeneradorCreateService {
     }
 
     if(campo.esNotNull){
+      codCampo += " NOT NULL"
+    }
+
+
+    return codCampo;
+
+  }
+
+  generarCampoSQL(campo: Campo) {
+
+    let codCampo = "["+campo.nombreCampo+"] "+ "[" + campo.tipoDato +"]";
+
+    if (campo.tamanio != null) {
+      codCampo += "(" + campo.tamanio + ") ";
+    }
+
+    if(campo.esPK){
+      codCampo += " IDENTITY(1,1)";
+    }
+
+    if (campo.esNotNull) {
       codCampo += " NOT NULL"
     }
 
@@ -154,11 +235,41 @@ export class GeneradorCreateService {
     return comentario;
   }
 
+  generarComentarioCampoSQL(tabla: Tabla, campo: Campo) {
+
+    let comentario = "EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'PCI=N;CONTIENE=";
+
+    comentario += campo.comentario + ";DOMINIO=" + campo.dominio+";'";
+
+    comentario += ", @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'"+tabla.nombreTabla+"'";
+
+    comentario += ", @level2type=N'COLUMN',@level2name=N'"+campo.nombreCampo+"';"+this.ENTER;
+
+    comentario += "GO"+this.ENTER+this.ENTER;
+
+    return comentario;
+  }
+
   generarComentarioTabla(tabla: Tabla) {
 
     let comentario = "COMMENT ON TABLE " + tabla.esquema + "." + tabla.nombreTabla + " IS ";
 
     comentario += "'TIPO=" + this.definirTipoTabla(tabla.tipoTabla)+";CONTIENE=" + tabla.comentario + ".';" + this.ENTER;
+
+    return comentario;
+  }
+
+  generarComentarioTablaSQL(tabla: Tabla) {
+
+    let comentario = "EXEC sys.sp_addextendedproperty @name=N'MS_Description', ";
+
+    comentario += "@value=N'TIPO=" + this.definirTipoTabla(tabla.tipoTabla) + ";CONTIENE=";
+
+    comentario += tabla.comentario + ";'";
+
+    comentario += ", @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'" + tabla.nombreTabla + "';"+this.ENTER;
+
+    comentario += "GO" + this.ENTER + this.ENTER;
 
     return comentario;
   }

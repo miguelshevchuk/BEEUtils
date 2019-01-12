@@ -8,7 +8,8 @@ export class Tabla {
     public tipoTabla:string;
     public campos:Campo[];
     public comentario: string;
-    public bbdd:string;
+    public motor:string;
+    public base:string;
 
     constructor(){}
 

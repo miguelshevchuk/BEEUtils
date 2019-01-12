@@ -15,12 +15,18 @@ export class GeneradorCreateComponent implements OnInit {
 
   esquemas:string[] = ["USR_BEE", "USR_BEE_LOG", "USR_LINK"];
 
-  tiposDeDatos:string[] = ["INTEGER", "VARCHAR", "VARCHAR2", "CHAR"];
+  bases: string[] = ["b2b", "b2b_transf_mult", "afip_seti", "informacionporcanales", "refresh_online"];
+
+  tiposDeDatos:string[] = [];
+
+  bbdds: string[] = ["Oracle", "SQLServer"];
 
   tiposDeTablas: string[] = ["Configuracion", "Transaccional", "Log", "Temporales", "Maestra" , "Dominio"];
 
   scriptForm = new FormGroup({
+    motor: new FormControl(this.bbdds[0]),
     esquema: new FormControl(this.esquemas[0]),
+    base: new FormControl(this.bases[0]),
     nombreTabla: new FormControl(null, [Validators.required]),
     tipoTabla: new FormControl(this.tiposDeTablas[0]),
     comentario: new FormControl(null, [Validators.required]),
@@ -42,6 +48,8 @@ export class GeneradorCreateComponent implements OnInit {
 
   get nombreTabla(){return this.scriptForm.get("nombreTabla")};
 
+  get motor() { return this.scriptForm.get("motor") };
+
   get comentarioTabla() { return this.scriptForm.get("comentario") };
 
   nombreCampo(idx){ return this.campos.at(idx).get("nombreCampo")};
@@ -53,6 +61,8 @@ export class GeneradorCreateComponent implements OnInit {
   dominio(idx) { return this.campos.at(idx).get("dominio") };
 
   comentario(idx) { return this.campos.at(idx).get("comentario") };
+  
+  tipoDato(idx) { return this.campos.at(idx).get("tipoDato") };
 
   get campos():FormArray{return <FormArray>this.scriptForm.get("campos")};
 
@@ -61,8 +71,9 @@ export class GeneradorCreateComponent implements OnInit {
     
   }
 
-  ngOnInit() {
 
+  ngOnInit() {
+    this.cambiarTiposDeDatosPorMotor();
   }
 
   nuevoCampo(){
@@ -87,6 +98,7 @@ export class GeneradorCreateComponent implements OnInit {
     this.campos.push(
       this.nuevoCampo()
     );
+    this.generarDominioAutomatico(this.campos.length-1);
 
   }
 
@@ -94,18 +106,86 @@ export class GeneradorCreateComponent implements OnInit {
     this.campos.removeAt(index);
   }
 
+
+  cambiarTiposDeDatosPorMotor(){
+    if(this.motor.value == "Oracle"){
+      this.tiposDeDatos = ["NUMBER", "LONG", "VARCHAR2", "CHAR", "CLOB", "DATE", "TIMESTAMP"];
+    }else{
+      this.tiposDeDatos = ["int", "bit", "decimal", "money", "float", "date", "datetime", "char", "text"];
+    }
+
+    this.resetearValoresDeTiposDeDatos();
+
+  }
+
+  resetearValoresDeTiposDeDatos(){
+    for (let i = 0; i < this.campos.length; i++) {
+      this.tipoDato(i).setValue(this.tiposDeDatos[0]);
+      this.generarDominioAutomatico(i);
+    }
+  }
+
+  generarDominioAutomatico(idx){
+
+    let nuevoDominio = "";
+
+    this.deshabiltiarTamañoSiCorresponde(idx);
+
+    switch(this.tipoDato(idx).value){
+
+      case "NUMBER": case "LONG": case "decimal": case "int": case "float": case "money":
+        nuevoDominio = "Valor numerico";
+        if (this.ingresoUnTamaño(idx)){
+          nuevoDominio += " hasta "+this.tamanio(idx).value+" caracteres";
+        }
+        break;
+      case "VARCHAR2": case "CHAR": case "char": case "text":
+        nuevoDominio = "Valor alfanumerico";
+        if (this.ingresoUnTamaño(idx)) {
+          nuevoDominio += " hasta " + this.tamanio(idx).value + " caracteres";
+        }
+        break;
+      case "CLOB":
+        nuevoDominio = "Valor alfanumerico hasta 4000 caracteres";
+        break;
+      case "bit":
+        nuevoDominio = "1 / 0";
+        break;
+      case "date": case "DATE": case "datetime":
+        nuevoDominio = "Fecha";
+        break;
+      case "timestamp":
+        nuevoDominio = "Timestamp";  
+        break;
+    }
+
+    this.dominio(idx).setValue(nuevoDominio);
+
+  }
+
+  deshabiltiarTamañoSiCorresponde(idx){
+    switch (this.tipoDato(idx).value) {
+      case "CLOB": case "bit": case "date": case "datetime": case "DATE": case "timestamp":
+        this.tamanio(idx).disable();
+        break;
+      default:
+        this.tamanio(idx).enable();
+        break;
+    }
+  }
+
+  ingresoUnTamaño(idx){
+    return this.tamanio(idx).value != null;
+  }
+
   generarCreate(){
-
-
 
     if(this.scriptForm.valid){
       let tabla:Tabla = this.scriptForm.value;
 
-      console.log(tabla);
-
       let create = this._generadorCreateService.generarCreate(tabla);
 
-      let contenidoPortapeles = new Portapapeles(create, "Habemus Creates!");
+      let contenidoPortapeles = new Portapapeles(create, "Bueno, mira. El create esta hermoso, pero no te colgues en mandar los grants a SIR...");
 
       this._router.navigate(
         ['resultadoCreate', JSON.stringify(contenidoPortapeles)], 
