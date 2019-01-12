@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { GeneradorGrantsComponent } from './generador-grants/generador-grants.component';
-import { GeneradorScriptsComponent } from './generador-scripts/generador-scripts.component';
+import { GeneradorCreateComponent } from './generador-create/generador-create.component';
 import { PortapapelesComponent } from '../../shared/componentes/portapapeles/portapapeles.component';
 
 const routes: Routes = [
@@ -9,9 +9,10 @@ const routes: Routes = [
   children: [
     { path: 'resultadoGrants/:contenido', component: PortapapelesComponent}
   ]},
-  { path: 'scripts', component: GeneradorScriptsComponent,
+  {
+    path: 'create', component: GeneradorCreateComponent,
   children: [
-    { path: 'resultadoScripts/:contenido', component: PortapapelesComponent}
+    { path: 'resultadoCreate/:contenido', component: PortapapelesComponent}
   ]},
   
 ];

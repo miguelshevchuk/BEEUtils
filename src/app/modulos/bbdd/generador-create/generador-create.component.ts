@@ -6,12 +6,12 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { Portapapeles } from '../../../modelos/shared/portapapeles';
 
 @Component({
-  selector: 'app-generador-scripts',
-  templateUrl: './generador-scripts.component.html',
-  styleUrls: ['./generador-scripts.component.css'],
+  selector: 'app-generador-create',
+  templateUrl: './generador-create.component.html',
+  styleUrls: ['./generador-create.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GeneradorScriptsComponent implements OnInit {
+export class GeneradorCreateComponent implements OnInit {
 
   esquemas:string[] = ["USR_BEE", "USR_BEE_LOG", "USR_LINK"];
 
@@ -108,7 +108,7 @@ export class GeneradorScriptsComponent implements OnInit {
       let contenidoPortapeles = new Portapapeles(create, "Habemus Creates!");
 
       this._router.navigate(
-        ['resultadoScripts', JSON.stringify(contenidoPortapeles)], 
+        ['resultadoCreate', JSON.stringify(contenidoPortapeles)], 
         { relativeTo: this.activatedRoute, skipLocationChange: true }
         );
     } 

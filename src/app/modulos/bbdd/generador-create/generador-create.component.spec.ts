@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GeneradorScriptsComponent } from './generador-scripts.component';
+import { GeneradorCreateComponent } from './generador-create.component';
 
 describe('GeneradorScriptsComponent', () => {
-  let component: GeneradorScriptsComponent;
-  let fixture: ComponentFixture<GeneradorScriptsComponent>;
+  let component: GeneradorCreateComponent;
+  let fixture: ComponentFixture<GeneradorCreateComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GeneradorScriptsComponent ]
+      declarations: [GeneradorCreateComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GeneradorScriptsComponent);
+    fixture = TestBed.createComponent(GeneradorCreateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

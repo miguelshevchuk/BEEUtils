@@ -5,12 +5,12 @@ import { BBDDRoutingModule } from './bbdd-routing.module';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule} from '@angular/forms';
 import { ClipboardModule } from 'ngx-clipboard';
-import { GeneradorScriptsComponent } from './generador-scripts/generador-scripts.component';
+import { GeneradorCreateComponent } from './generador-create/generador-create.component';
 
 @NgModule({
   declarations: [
     GeneradorGrantsComponent,
-    GeneradorScriptsComponent
+    GeneradorCreateComponent
   ],
   imports: [
     CommonModule,
