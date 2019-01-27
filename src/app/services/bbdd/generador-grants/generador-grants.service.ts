@@ -24,9 +24,14 @@ export class GeneradorGrantsService {
   }
 
   private armarGrantsGenericos(tabla:Tabla){
-    let grants = this.GRANT+"SELECT "+this.ON+this.definicionTabla(tabla)+this.TO+Aplicaciones.ATINC.rol+";"+this.ENTER;
-    grants += this.GRANT+"SELECT, UPDATE, DELETE, INSERT "+this.ON+this.definicionTabla(tabla)+this.TO+Aplicaciones.SCRIPTRUN.rol+";"+this.ENTER;
-    
+    let grants = this.GRANT+"SELECT"+this.ON+this.definicionTabla(tabla)+this.TO+Aplicaciones.ATINC.rol+";"+this.ENTER;
+
+    if(tabla.tipoTabla == "Secuencia"){
+      grants += this.GRANT+"SELECT"+this.ON+this.definicionTabla(tabla)+this.TO+Aplicaciones.SCRIPTRUN.rol+";"+this.ENTER;
+    }else{
+      grants += this.GRANT+"SELECT, UPDATE, DELETE, INSERT"+this.ON+this.definicionTabla(tabla)+this.TO+Aplicaciones.SCRIPTRUN.rol+";"+this.ENTER;
+    }
+
     return grants;
   }
   
@@ -59,6 +64,8 @@ export class GeneradorGrantsService {
       return "EXECUTE";
     }else if(tipoTabla == "Log"){
       return "INSERT";
+    }else if(tipoTabla == "Secuencia"){
+      return "SELECT";
     }
 
     return "";

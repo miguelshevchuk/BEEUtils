@@ -13,6 +13,7 @@ export class GeneradorCreateService {
   constructor() { }
 
   generarCreate(tabla:Tabla){
+    this.ORDEN_CON_NN = 1;
     if(tabla.motor == "Oracle"){
       return this.generarCreateOracle(tabla);
     }else{
@@ -35,7 +36,7 @@ export class GeneradorCreateService {
 
     create += "GO"+this.ENTER+this.ENTER;
 
-    create += "CREATE TABLE [dbo].[" + tabla.nombreTabla + "]{" + this.ENTER;
+    create += "CREATE TABLE [dbo].[" + tabla.nombreTabla + "](" + this.ENTER;
 
     for (let i = 0; i < tabla.campos.length; i++) {
 
@@ -78,7 +79,7 @@ export class GeneradorCreateService {
     let constraints = "";
     let comentarios = this.generarComentarioTabla(tabla);
 
-    let create = "CREATE TABLE "+tabla.esquema+"."+tabla.nombreTabla+"{"+this.ENTER;
+    let create = "CREATE TABLE "+tabla.esquema+"."+tabla.nombreTabla+"("+this.ENTER;
 
       for(let i=0; i < tabla.campos.length; i++){
 
@@ -107,7 +108,7 @@ export class GeneradorCreateService {
 
       }
 
-    create += this.ENTER+"}" + this.ENTER +"tablespace TS_BEE_DAT;"+this.ENTER+this.ENTER;
+    create += this.ENTER+")" + this.ENTER +"tablespace TS_BEE_DAT;"+this.ENTER+this.ENTER;
 
     constraints += this.generarConstraintUQ(tabla);
 
@@ -173,7 +174,7 @@ export class GeneradorCreateService {
 
     let constraintLoca = "ALTER TABLE " + tabla.esquema + "." + tabla.nombreTabla + " ";
 
-    constraintLoca += "ADD CONSTRAINT CON_" + tabla.nombreTabla +"_01_UQ ";
+    constraintLoca += "ADD CONSTRAINT CON_" + tabla.nombreTabla +"_01_UK ";
 
     constraintLoca += "UNIQUE (";
 
@@ -201,10 +202,32 @@ export class GeneradorCreateService {
   nombreConstraintNN(nombreTabla:string){
     let numeroCon = (this.ORDEN_CON_NN.toString().length < 2) ? "0" + this.ORDEN_CON_NN : this.ORDEN_CON_NN;
 
-    let nombre = "CON_" + nombreTabla + "_" + numeroCon + "_NN";
+    //let nombre = "CON_" + nombreTabla + "_" + numeroCon + "_NN";
+    let nombre = this.armarNombreConstraint("CON_", nombreTabla, "_" + numeroCon + "_NN");
     this.ORDEN_CON_NN++;
 
     return nombre;
+  }
+
+  armarNombreConstraint(primeraParte, segundaParte, terceraParte){
+
+    let nombre = "";
+
+    if((primeraParte + segundaParte + terceraParte).length > 30){
+      nombre = primeraParte + this.sacarVocales(segundaParte) + terceraParte;
+    }else{
+      nombre = primeraParte + segundaParte + terceraParte;
+    }
+
+    return nombre;
+  }
+
+  sacarVocales(unTexto){
+    let unTextoNuevo = unTexto.toUpperCase();
+    unTextoNuevo = unTextoNuevo.replace(/[AEIOU]/gi, "");
+
+
+    return unTextoNuevo;
   }
 
   generarConstraintPK(tabla:Tabla, campo:Campo){

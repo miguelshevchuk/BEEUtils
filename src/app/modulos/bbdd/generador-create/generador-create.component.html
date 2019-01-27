@@ -29,7 +29,7 @@
       <label for="tabla">Tabla</label>
       <input [ngClass]="{'is-invalid':nombreTabla.invalid && (nombreTabla.dirty || nombreTabla.touched)}" pattern="[a-zA-Z_]*" formControlName="nombreTabla" class="form-control" type="text" placeholder="Ingrese la tabla a generar" (change)="nombrePK()" required>
       <div class="invalid-feedback">
-        Dale.. Crack...
+        Dale.. Crack... <img src='assets/facepalm.ico' />
       </div>
     </div>
 
@@ -46,7 +46,7 @@
         formControlName="comentario" class="form-control" type="text" placeholder="Ingrese el comentario de la tabla"
         required>
       <div class="invalid-feedback">
-        Dale.. Crack...
+        Cualquier duda, comunicate al 2694... <img src='assets/angel.ico' />
       </div>
     </div>
 
@@ -62,7 +62,7 @@
         <div class="col-4">
           <input type="text" [ngClass]="{'is-invalid':nombreCampo(idx).invalid && (nombreCampo(idx).dirty || nombreCampo(idx).touched)}" class="form-control" placeholder="Nombre" name="nombreCampo" formControlName="nombreCampo" pattern="[a-zA-Z_]*" >
           <div class="invalid-feedback">
-            Dale.. Crack...
+            Dale.. Crack... <img src='assets/facepalm.ico' />
           </div>
         </div>
         <div class="col-3">
@@ -79,7 +79,7 @@
           <input type="text" [ngClass]="{'is-invalid':comentario(idx).invalid && (comentario(idx).dirty || comentario(idx).touched)}"
             class="form-control" placeholder="Comentario" name="comentario" formControlName="comentario" pattern="[a-zA-Z_ ]*">
           <div class="invalid-feedback">
-            Dale.. Crack...
+            Dale.. Crack... <img src='assets/unamused.ico' />
           </div>
         </div>
         
@@ -111,7 +111,7 @@
           <input type="text" [ngClass]="{'is-invalid':tamanio(idx).invalid && (tamanio(idx).dirty || tamanio(idx).touched)}"
             class="form-control" placeholder="Tamaño" name="tamanio" formControlName="tamanio" pattern="[0-9,]*" (change)="generarDominioAutomatico(idx)">
           <div class="invalid-feedback">
-            Dale.. Crack...
+            ... <img src='assets/facepalm.ico' />
           </div>
         </div>
         
@@ -119,7 +119,7 @@
           <input type="text" class="form-control" [ngClass]="{'is-invalid':dominio(idx).invalid && (dominio(idx).dirty || dominio(idx).touched)}"
             placeholder="Dominio" name="dominio" formControlName="dominio" pattern="[a-zA-Z0-9_/, ]*">
           <div class="invalid-feedback">
-            Dale.. Crack...
+            Sos bueno eh... <img src='assets/unamused.ico' />
           </div>
 
         </div>

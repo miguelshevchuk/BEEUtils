@@ -4,6 +4,7 @@ import {FormControl, FormGroup, Validators, FormArray} from '@angular/forms';
 import {GeneradorCreateService} from '../../../services/bbdd/generador-create/generador-create.service';
 import {Router, ActivatedRoute} from '@angular/router';
 import { Portapapeles } from '../../../modelos/shared/portapapeles';
+import { TipoTabla } from '../../../shared/constantes/bbdd/tipoTabla.const';
 
 @Component({
   selector: 'app-generador-create',
@@ -19,9 +20,9 @@ export class GeneradorCreateComponent implements OnInit {
 
   tiposDeDatos:string[] = [];
 
-  bbdds: string[] = ["Oracle", "SQLServer"];
+  tiposDeTablas:string[] = [TipoTabla.CFG, TipoTabla.DOM, TipoTabla.LOG, TipoTabla.MAE, TipoTabla.TMP, TipoTabla.TRX];
 
-  tiposDeTablas: string[] = ["Configuracion", "Transaccional", "Log", "Temporales", "Maestra" , "Dominio"];
+  bbdds: string[] = ["Oracle", "SQLServer"];
 
   scriptForm = new FormGroup({
     motor: new FormControl(this.bbdds[0]),
@@ -165,7 +166,7 @@ export class GeneradorCreateComponent implements OnInit {
 
   deshabiltiarTamañoSiCorresponde(idx){
     switch (this.tipoDato(idx).value) {
-      case "CLOB": case "bit": case "date": case "datetime": case "DATE": case "timestamp":
+      case "CLOB": case "bit": case "date": case "datetime": case "DATE": case "timestamp": case "int": case "text":
         this.tamanio(idx).disable();
         break;
       default:
@@ -185,7 +186,7 @@ export class GeneradorCreateComponent implements OnInit {
 
       let create = this._generadorCreateService.generarCreate(tabla);
 
-      let contenidoPortapeles = new Portapapeles(create, "Bueno, mira. El create esta hermoso, pero no te colgues en mandar los grants a SIR...");
+      let contenidoPortapeles = new Portapapeles(create, "No colgues en mandar los grants a SIR...");
 
       this._router.navigate(
         ['resultadoCreate', JSON.stringify(contenidoPortapeles)], 
