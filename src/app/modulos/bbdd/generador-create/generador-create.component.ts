@@ -38,7 +38,7 @@ export class GeneradorCreateComponent implements OnInit {
         tamanio: new FormControl(null),
         esPK: new FormControl(true),
         esNotNull: new FormControl({value: true, disabled: true}),
-        esUnique: new FormControl(false),
+        esUnique: new FormControl({ value: false, disabled: true }),
         comentario: new FormControl("Identificador de la tabla", [Validators.required]),
         dominio: new FormControl(null, [Validators.required])
       })
@@ -112,7 +112,7 @@ export class GeneradorCreateComponent implements OnInit {
     if(this.motor.value == "Oracle"){
       this.tiposDeDatos = ["NUMBER", "LONG", "VARCHAR2", "CHAR", "CLOB", "DATE", "TIMESTAMP"];
     }else{
-      this.tiposDeDatos = ["int", "bit", "decimal", "money", "float", "date", "datetime", "char", "text"];
+      this.tiposDeDatos = ["numeric","int", "bit", "decimal", "money", "float", "date", "datetime", "char", "text"];
     }
 
     this.resetearValoresDeTiposDeDatos();
@@ -134,7 +134,7 @@ export class GeneradorCreateComponent implements OnInit {
 
     switch(this.tipoDato(idx).value){
 
-      case "NUMBER": case "LONG": case "decimal": case "int": case "float": case "money":
+      case "NUMBER": case "LONG": case "decimal": case "int": case "float": case "money": case "numeric":
         nuevoDominio = "Valor numerico";
         if (this.ingresoUnTamaño(idx)){
           nuevoDominio += " hasta "+this.tamanio(idx).value+" caracteres";
@@ -182,7 +182,7 @@ export class GeneradorCreateComponent implements OnInit {
   generarCreate(){
 
     if(this.scriptForm.valid){
-      let tabla:Tabla = this.scriptForm.value;
+      let tabla:Tabla = new Tabla(this.scriptForm.value);
 
       let create = this._generadorCreateService.generarCreate(tabla);
 

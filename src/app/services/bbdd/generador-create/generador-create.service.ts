@@ -28,7 +28,9 @@ export class GeneradorCreateService {
   }
 
   generarCreateSQL(tabla: Tabla) {
-    let constraintPK = this.TAB+"CONSTRAINT [PK_"+tabla.nombreTabla+"] PRIMARY KEY CLUSTERED "+this.ENTER+"("+this.ENTER;
+    //et constraintPK = this.TAB+"CONSTRAINT [PK_"+tabla.nombreTabla+"] PRIMARY KEY CLUSTERED "+this.ENTER+"("+this.ENTER;
+
+    let constraints = "";
 
     let comentarios = this.generarComentarioTablaSQL(tabla);
 
@@ -36,7 +38,7 @@ export class GeneradorCreateService {
 
     create += "GO"+this.ENTER+this.ENTER;
 
-    create += "CREATE TABLE [dbo].[" + tabla.nombreTabla + "](" + this.ENTER;
+    create += "CREATE TABLE [dbo].[" + tabla.armarNombreTabla() + "](" + this.ENTER;
 
     for (let i = 0; i < tabla.campos.length; i++) {
 
@@ -46,29 +48,32 @@ export class GeneradorCreateService {
 
         campo = this.prepararCampoPK(campo, tabla);
 
-        constraintPK += this.TAB+"["+campo.nombreCampo+"]ASC"+this.ENTER;
-
-        constraintPK += ")" + this.ENTER+this.TAB +"WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, ";
-        
-        constraintPK += "IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, ";
-        constraintPK += "FILLFACTOR = 90) ON [PRIMARY] "+this.ENTER;
-
+        constraints += this.generarConstraintPK(tabla, campo);
 
       }
 
       create += this.TAB + this.generarCampoSQL(campo);
       
-      create += "," + this.ENTER;
+      if (i < tabla.campos.length - 1) {
+        create += "," + this.ENTER;
+      }
+
+      if (tabla.campos[i].esNotNull) {
+        constraints += this.generarConstraintNN(tabla, campo);
+      }
 
       comentarios += this.generarComentarioCampoSQL(tabla, campo);
 
-    }
+    }    
 
-    create += constraintPK;
-
-    create += ") ON[PRIMARY]"+this.ENTER+this.ENTER;
+    create += this.ENTER+")"+this.ENTER+this.ENTER;
 
     create += "GO"+this.ENTER+this.ENTER;
+
+    constraints += this.generarConstraintUQ(tabla);
+
+    create += constraints + this.ENTER + this.ENTER;
+    create += "GO" + this.ENTER + this.ENTER;
 
     create += comentarios;
 
@@ -79,7 +84,7 @@ export class GeneradorCreateService {
     let constraints = "";
     let comentarios = this.generarComentarioTabla(tabla);
 
-    let create = "CREATE TABLE "+tabla.esquema+"."+tabla.nombreTabla+"("+this.ENTER;
+    let create = "CREATE TABLE " + tabla.armarNombreTabla() +"("+this.ENTER;
 
       for(let i=0; i < tabla.campos.length; i++){
 
@@ -159,9 +164,9 @@ export class GeneradorCreateService {
 
   generarConstraintNN(tabla:Tabla, campo:Campo){
 
-    let constraintLoca = "ALTER TABLE " + tabla.esquema + "." + tabla.nombreTabla+" ";
+    let constraintLoca = "ALTER TABLE " + tabla.armarNombreTabla() +" ";
 
-    constraintLoca += "ADD CONSTRAINT " + this.nombreConstraintNN(tabla.nombreTabla);
+    constraintLoca += "ADD CONSTRAINT " + this.nombreConstraintNN(tabla);
 
     constraintLoca+= " CHECK (\""+campo.nombreCampo+"\" IS NOT NULL);"+this.ENTER+this.ENTER;
 
@@ -172,11 +177,11 @@ export class GeneradorCreateService {
 
     let tieneUQ = false;
 
-    let constraintLoca = "ALTER TABLE " + tabla.esquema + "." + tabla.nombreTabla + " ";
+    let constraintLoca = "ALTER TABLE " + tabla.armarNombreTabla() + " ";
 
-    constraintLoca += "ADD CONSTRAINT CON_" + tabla.nombreTabla +"_01_UK ";
+    constraintLoca += "ADD CONSTRAINT " + tabla.nombreConstraintUQ("01");
 
-    constraintLoca += "UNIQUE (";
+    constraintLoca += " UNIQUE (";
 
     for (let i = 0; i < tabla.campos.length; i++) {
       let campo = tabla.campos[i];
@@ -199,57 +204,39 @@ export class GeneradorCreateService {
 
   }
 
-  nombreConstraintNN(nombreTabla:string){
+  nombreConstraintNN(tabla:Tabla){
     let numeroCon = (this.ORDEN_CON_NN.toString().length < 2) ? "0" + this.ORDEN_CON_NN : this.ORDEN_CON_NN;
 
     //let nombre = "CON_" + nombreTabla + "_" + numeroCon + "_NN";
-    let nombre = this.armarNombreConstraint("CON_", nombreTabla, "_" + numeroCon + "_NN");
+    let nombre = tabla.nombreConstraintNN(numeroCon);
     this.ORDEN_CON_NN++;
 
     return nombre;
   }
 
-  armarNombreConstraint(primeraParte, segundaParte, terceraParte){
+  generarConstraintPK(tabla:Tabla, campo:Campo){
 
-    let nombre = "";
+    let indice = "CREATE INDEX " + tabla.nombreIndicePK();
+    indice += " ON "+tabla.armarNombreTabla()+"("+campo.nombreCampo+")";
 
-    if((primeraParte + segundaParte + terceraParte).length > 30){
-      nombre = primeraParte + this.sacarVocales(segundaParte) + terceraParte;
-    }else{
-      nombre = primeraParte + segundaParte + terceraParte;
+    if(tabla.motor == "Oracle"){
+      indice += " TABLESPACE TS_BEE_IDX";
     }
 
-    return nombre;
-  }
+    indice += ";" + this.ENTER + this.ENTER;
 
-  sacarVocales(unTexto){
-    let unTextoNuevo = unTexto.toUpperCase();
-    unTextoNuevo = unTextoNuevo.replace(/[AEIOU]/gi, "");
+    let constraint = "ALTER TABLE " + tabla.armarNombreTabla() + " ";
 
-
-    return unTextoNuevo;
-  }
-
-  generarConstraintPK(tabla:Tabla, campo:Campo){
-    let nombreIndice = tabla.esquema + ".PK_" + tabla.nombreTabla;
-
-    let indice = "CREATE INDEX " + nombreIndice;
-    indice += " ON "+tabla.esquema+"."+tabla.nombreTabla+"("+campo.nombreCampo+")";
-    indice += " TABLESPACE TS_BEE_IDX;"+this.ENTER+this.ENTER;
-
-
-    let constraint = "ALTER TABLE " + tabla.esquema + "." + tabla.nombreTabla + " ";
-
-    constraint += "ADD CONSTRAINT CON_" + tabla.nombreTabla +"_PK";
+    constraint += "ADD CONSTRAINT " + tabla.nombreConstraintPK(); 
 
     constraint += " PRIMARY KEY (" + campo.nombreCampo + ") ";
-    constraint += "USING INDEX "+nombreIndice+";"+this.ENTER+this.ENTER;
+    constraint += "USING INDEX " + tabla.nombreIndicePK()+";"+this.ENTER+this.ENTER;
 
     return indice + constraint;
   }
 
   generarComentarioCampo(tabla: Tabla, campo: Campo){
-    let comentario = "COMMENT ON COLUMN "+tabla.esquema+"."+tabla.nombreTabla+"."+campo.nombreCampo+" IS ";
+    let comentario = "COMMENT ON COLUMN " + tabla.armarNombreTabla()+"."+campo.nombreCampo+" IS ";
 
     comentario += "'PCI=N;CONTIENE="+campo.comentario+";DOMINIO="+campo.dominio+".';"+this.ENTER; 
 
@@ -273,7 +260,7 @@ export class GeneradorCreateService {
 
   generarComentarioTabla(tabla: Tabla) {
 
-    let comentario = "COMMENT ON TABLE " + tabla.esquema + "." + tabla.nombreTabla + " IS ";
+    let comentario = "COMMENT ON TABLE " + tabla.armarNombreTabla() + " IS ";
 
     comentario += "'TIPO=" + this.definirTipoTabla(tabla.tipoTabla)+";CONTIENE=" + tabla.comentario + ".';" + this.ENTER;
 
